@@ -1,0 +1,10 @@
+{
+  "name": "Stride",
+  "short_name": "Stride",
+  "description": "Track your runs with GPS.",
+  "start_url": "/record",
+  "display": "standalone",
+  "background_color": "#eeeff1",
+  "theme_color": "#eeeff1",
+  "icons": []
+}
