@@ -1,11 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import type { Point } from "@/lib/types";
 import { fmtDuration, fmtKm, fmtPace, haversine, paceSecPerKm } from "@/lib/geo";
 import { addActivity, newId } from "@/lib/store";
-import RouteMap from "./RouteMap";
+
+// Leaflet touches `window`, so the map only loads in the browser.
+const LiveMap = dynamic(() => import("./LiveMap"), {
+  ssr: false,
+  loading: () => <div className="mt-6 aspect-3/2 rounded-lg bg-chalk" />,
+});
 
 type Status = "idle" | "running" | "paused";
 type Source = "gps" | "demo";
@@ -226,7 +232,13 @@ export default function Recorder() {
         </div>
       </section>
 
-      <RouteMap points={points} live={status === "running"} ratio={1.5} className="mt-6 rounded-lg" />
+      <LiveMap
+        points={points}
+        live
+        ratio={1.5}
+        className="mt-6 rounded-lg"
+        emptyLabel={status === "idle" ? "Map follows you once you start" : "Finding your position…"}
+      />
 
       {error && (
         <p role="alert" className="mt-4 rounded-md bg-lane/10 px-3 py-2 text-sm text-lane-deep">

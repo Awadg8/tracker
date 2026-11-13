@@ -1,11 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteActivity, updateActivity, useActivity, useHydrated } from "@/lib/store";
 import { fmtDate, fmtDuration, fmtKm, fmtPace, fmtTime, paceSecPerKm, splits } from "@/lib/geo";
-import RouteMap from "./RouteMap";
+
+const LiveMap = dynamic(() => import("./LiveMap"), {
+  ssr: false,
+  loading: () => <div className="aspect-13/10 rounded-lg bg-chalk" />,
+});
 
 export default function ActivityDetail({ id }: { id: string }) {
   const router = useRouter();
@@ -104,7 +109,7 @@ export default function ActivityDetail({ id }: { id: string }) {
         </dl>
       </section>
 
-      {a.points.length > 1 && <RouteMap points={a.points} className="rounded-lg" />}
+      {a.points.length > 1 && <LiveMap points={a.points} ratio={1.3} className="rounded-lg" />}
 
       {kmSplits.length > 0 && (
         <section aria-labelledby="splits" className="rounded-lg bg-paper p-4">
